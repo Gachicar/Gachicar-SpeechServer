@@ -21,11 +21,11 @@ def read_file(file_name):
                 this_sent.append(tuple(l.split()))
     return sents
 
-p = Preprocess(word2index_dic=r'C:\Users\skybr\OneDrive\Desktop\chatbot_yeji\train_tools\dict\chatbot_dict.bin',
-               userdic=r'C:\Users\skybr\OneDrive\Desktop\chatbot_yeji\utils\user_dic.tsv')
+p = Preprocess(word2index_dic=r'C:\Users\skybr\OneDrive\Desktop\chatbot_yeji\train_tools\dict\chatbot_dict2.bin',
+               userdic=r'C:\Users\skybr\OneDrive\Desktop\chatbot_yeji\utils\user_dic2.tsv')
 
 # 학습용 말뭉치 데이터를 불러옴
-corpus = read_file(r'C:\Users\skybr\OneDrive\Desktop\chatbot_yeji\models\ner\ner_train.txt')
+corpus = read_file(r'C:\Users\skybr\OneDrive\Desktop\chatbot_yeji\models\ner\ner_train2.txt')
 
 # 말뭉치 데이터에서 단어와 BIO 태그만 불러와 학습용 데이터셋 생성
 sentences, tags = [], []
@@ -47,7 +47,7 @@ print("0번 째 샘플 bio 태그 : \n", tags[0])
 print("샘플 단어 시퀀스 최대 길이 :", max(len(l) for l in sentences))
 print("샘플 단어 시퀀스 평균 길이 :", (sum(map(len, sentences))/len(sentences)))
 
-# 토크나이저 정의
+# 토크나이저 정의5
 tag_tokenizer = preprocessing.text.Tokenizer(lower=False) # 태그 정보는 lower=False 소문자로 변환하지 않는다.
 tag_tokenizer.fit_on_texts(tags)
 
@@ -97,7 +97,7 @@ model.compile(loss='categorical_crossentropy', optimizer=Adam(0.01), metrics=['a
 model.fit(x_train, y_train, batch_size=128, epochs=10)
 
 print("평가 결과 : ", model.evaluate(x_test, y_test)[1])
-model.save('ner_model.h5')
+model.save('ner_model.h5_2')
 
 
 # 시퀀스를 NER 태그로 변환
@@ -123,3 +123,5 @@ test_tags = sequences_to_tag(y_test)    # 실제 NER
 # F1 평가 결과
 print(classification_report(test_tags, pred_tags))
 print("F1-score: {:.1%}".format(f1_score(test_tags, pred_tags)))
+
+print(tag_tokenizer.index_word) # {1: 'O', 2: 'B_DEST', 3: 'B_DT', 4: 'B_TI', 5: 'I', 6: 'B_OG', 7: 'B_PS', 8: 'B_B_DEST', 9: 'NNP'}

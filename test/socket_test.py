@@ -1,18 +1,25 @@
+## 백엔드와 소켓 통신하는 코드 !! ## 
+
 from socket import *
 from utils.Preprocess import Preprocess
 from models.intent.IntentModel import IntentModel
 from models.ner.NerModel import NerModel
 import json
+from datetime import datetime, timedelta
+
+# 현재 년도 받아오기
+current_year = datetime.now().year
 
 # Preprocess 객체 초기화
 p = Preprocess(word2index_dic=r'C:\Users\skybr\OneDrive\Desktop\chatbot_yeji\train_tools\dict\chatbot_dict.bin',
-               userdic=r'C:\Users\skybr\OneDrive\Desktop\chatbot_yeji\utils\user_dic.tsv')
+               userdic=r'C:\Users\skybr\OneDrive\Desktop\chatbot_yeji\utils\user_dic3.tsv')
 
 # IntentModel 초기화
 intent = IntentModel(model_name=r'C:\Users\skybr\OneDrive\Desktop\chatbot_yeji\models\intent\intent_model.h5', proprocess=p)
 
 # NerModel 초기화 
 ner = NerModel(model_name=r'C:\Users\skybr\OneDrive\Desktop\chatbot_yeji\models\ner\ner_model.h5', proprocess=p)
+
 
 # 소켓 설정
 HOST = '' 
@@ -35,6 +42,10 @@ while True:
     if data:
         received_text = data.decode('utf-8')
         print("받은 메시지:", received_text)
+
+        # 예약 받기 위한 과정 
+        pos = p.pos(received_text)
+        ret = p.get_keywords(pos, without_tag=False)
 
         # 태그에 해당하는 단어 추출 
         predicts = ner.predict(received_text)
@@ -61,6 +72,10 @@ while True:
         predict = intent.predict_class(received_text)
         predict_label = intent.labels[predict]
 
+        date = None
+        hour = None
+        minute = None
+
         # 의도에 따른 응답 전송
         if predict_label == '인사':
             response = "안녕하세요. 무엇을 도와드릴까요?"
@@ -69,7 +84,28 @@ while True:
         elif predict_label == '주문':
             response = "네 알겠습니다. 목적지로 출발하겠습니다."
         elif predict_label == '예약':
-            response = "네 알겠습니다. 예약이 완료되었습니다."
+            response = ""
+            for keyword, pos in ret:
+                if pos == 'NNP':
+                    date_str = keyword.replace(" ", "")
+                    if date_str == "오늘":
+                        date = datetime.now().strftime('%Y-%m-%d')
+                    elif date_str == "내일":
+                        date = (datetime.now() + timedelta(days=1)).strftime('%Y.%m.%d')
+                    elif date_str == "모레":
+                        date = (datetime.now() + timedelta(days=2)).strftime('%Y.%m.%d')
+                    elif date_str == "글피":
+                        date = (datetime.now() + timedelta(days=3)).strftime('%Y.%m.%d')
+                    elif date_str == "일주일후":
+                        date = (datetime.now() + timedelta(weeks=1)).strftime('%Y.%m.%d')
+                    else:
+                        date_obj = datetime.strptime(date_str, '%m월%d일')
+                        date = date_obj.replace(year=current_year).strftime('%Y.%m.%d')
+                elif pos == 'NR':
+                    if hour is None:
+                        hour = keyword
+                    else:
+                        minute = keyword
         else:
             response = "잘 이해하지 못했습니다. 다시한번 말씀해주세요."
 
@@ -78,7 +114,9 @@ while True:
             "intention": predict_label,
             "response": response,
             "destination": destination,
-            "time": time
+            "date": date,  
+            "hour" : hour,
+            "minute" : minute
         }
         # JSON 형식으로 변환하여 클라이언트에게 전송
         response_json = json.dumps(response_data, ensure_ascii=False)

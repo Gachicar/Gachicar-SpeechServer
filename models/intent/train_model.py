@@ -8,14 +8,14 @@ from tensorflow.keras.layers import Input, Embedding, Dense, Dropout, Conv1D, Gl
 
 # 데이터 읽어오기
 # train_file = "total_train_data_modified50.csv"
-train_file = r"C:\Users\skybr\OneDrive\Desktop\chatbot_yeji\models\intent\total_train_data_modified50.csv"
+train_file = r"C:\Users\skybr\OneDrive\Desktop\chatbot_yeji\models\intent\total_train_data_modified50_2.csv"
 data = pd.read_csv(train_file, delimiter=',')
 queries = data['query'].tolist()
 intents = data['intent'].tolist()
 
 from utils.Preprocess import Preprocess
-p = Preprocess(word2index_dic=r'C:\Users\skybr\OneDrive\Desktop\chatbot_yeji\train_tools\dict\chatbot_dict.bin',
-               userdic=r'C:\Users\skybr\OneDrive\Desktop\chatbot_yeji\utils\user_dic.tsv')
+p = Preprocess(word2index_dic=r'C:\Users\skybr\OneDrive\Desktop\chatbot_yeji\train_tools\dict\chatbot_dict2.bin',
+               userdic=r'C:\Users\skybr\OneDrive\Desktop\chatbot_yeji\utils\user_dic2.tsv')
 
 # 단어 시퀀스 생성
 sequences = []
@@ -108,4 +108,4 @@ print('loss: %f' % (loss))
 
 
 # 모델 저장  ○8
-model.save('intent_model.h5')
+model.save('intent_model.h5_2')
