@@ -89,7 +89,7 @@ while True:
                 if pos == 'NNP':
                     date_str = keyword.replace(" ", "")
                     if date_str == "오늘":
-                        date = datetime.now().strftime('%Y-%m-%d')
+                        date = datetime.now().strftime('%Y.%m.%d')
                     elif date_str == "내일":
                         date = (datetime.now() + timedelta(days=1)).strftime('%Y.%m.%d')
                     elif date_str == "모레":
