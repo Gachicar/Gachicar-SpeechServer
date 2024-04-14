@@ -21,11 +21,11 @@ def read_file(file_name):
                 this_sent.append(tuple(l.split()))
     return sents
 
-p = Preprocess(word2index_dic=r'C:\Users\skybr\OneDrive\Desktop\chatbot_yeji\train_tools\dict\chatbot_dict2.bin',
-               userdic=r'C:\Users\skybr\OneDrive\Desktop\chatbot_yeji\utils\user_dic2.tsv')
+p = Preprocess(word2index_dic=r'C:\Users\skybr\OneDrive\Desktop\chatbot_yeji\train_tools\dict\chatbot_dict.bin',
+               userdic=r'C:\Users\skybr\OneDrive\Desktop\chatbot_yeji\utils\user_dic.tsv')
 
 # 학습용 말뭉치 데이터를 불러옴
-corpus = read_file(r'C:\Users\skybr\OneDrive\Desktop\chatbot_yeji\models\ner\ner_train2.txt')
+corpus = read_file(r'C:\Users\skybr\OneDrive\Desktop\chatbot_yeji\models\ner\ner_train.txt')
 
 # 말뭉치 데이터에서 단어와 BIO 태그만 불러와 학습용 데이터셋 생성
 sentences, tags = [], []

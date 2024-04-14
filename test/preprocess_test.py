@@ -11,7 +11,7 @@ from utils.Preprocess import Preprocess
 from utils.Preprocess import Preprocess
 
 sent = "3월 25일 12시 30분으로 예약해줘"
-p = Preprocess(userdic=r"C:\Users\skybr\OneDrive\Desktop\chatbot_yeji\utils\user_dic3.tsv")
+p = Preprocess(userdic=r"C:\Users\skybr\OneDrive\Desktop\chatbot_yeji\utils\user_dic.tsv")
 
 pos = p.pos(sent)
 ret = p.get_keywords(pos, without_tag=False)
